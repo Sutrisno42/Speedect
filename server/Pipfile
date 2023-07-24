@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+flask-restx = "*"
+pyopenssl = "*"
+flask-sqlalchemy = "*"
+mysqlclient = "*"
+pyjwt = "*"
+flask-cors = "*"
+pandas = "*"
+numpy = "*"
+tensorflow = "*"
+librosa = "*"
+matplotlib = "*"
+streamlit = "*"
+config = "*"
+pyaudio = "*"
+mysql-connector-python = "*"
+werkzeug = "*"
+sqlalchemy = "*"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"

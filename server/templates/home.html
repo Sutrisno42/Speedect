@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+    <head>
+        <!--Meta-->
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta
+        name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!--Fontawesome-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+        <!-- <link rel="stylesheet" href="home.css"/> -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+        <!-- connecting Google fonts-->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins"> <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=DM Serif Display">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+
+        <title>Speedect</title>
+        <link rel="stylesheet" href="../staticFiles/style.css">
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () { // Function to handle file selection
+                $("#fileInput").change(function () {
+                    var file = $(this)[0].files[0];
+                    var url = URL.createObjectURL(file);
+                    $("#audio-player").attr("src", url);
+                    visualizeAudio(url);
+                });
+            });
+
+
+   // Function to visualize audio waveform
+   function visualizeAudio(url) {
+      var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      var canvas = document.getElementById("waveform");
+      var canvasContext = canvas.getContext("2d");
+
+      var audioElement = document.getElementById("audio-player");
+      var audioSource = audioContext.createMediaElementSource(audioElement);
+      
+      var analyserNode = audioContext.createAnalyser();
+      analyserNode.fftSize = 2048;
+
+      audioSource.connect(analyserNode);
+      analyserNode.connect(audioContext.destination);
+
+      var bufferLength = analyserNode.frequencyBinCount;
+      var dataArray = new Uint8Array(bufferLength);
+
+      function draw() {
+        canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+        analyserNode.getByteTimeDomainData(dataArray);
+
+        canvasContext.lineWidth = 2;
+        canvasContext.strokeStyle = "rgb(13, 208, 243)";
+        canvasContext.beginPath();
+
+        var sliceWidth = canvas.width * 1.0 / bufferLength;
+        var x = 0;
+
+        for (var i = 0; i < bufferLength; i++) {
+          var v = dataArray[i] / 128.0;
+          var y = v * canvas.height / 2;
+
+          if (i === 0) {
+            canvasContext.moveTo(x, y);
+          } else {
+            canvasContext.lineTo(x, y);
+          }
+
+          x += sliceWidth;
+        }
+
+        canvasContext.lineTo(canvas.width, canvas.height / 2);
+        canvasContext.stroke();
+
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+    }
+
+        </script>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">Speedect</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href={{ url_for('home') }}>Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href={{ url_for('plot') }}>Visualisasi</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+
+
+        <section class="Main">
+            
+            <div class="container">
+                <div class="Packed">
+                    <div class="Head">
+                        <h1>Speedect</h1>
+                    </div>
+
+
+                    <div class="audio-container">
+                        <h1>Select Audio file</span>
+                        <form action="/predict2" method="POST" enctype="multipart/form-data">
+                            <input id="fileInput" class="select_file" type="file" name="file"/>
+                            <br/>
+                            <audio id="audio-player" controls>
+                                Your browser does not support the audio element.
+                            </audio>
+                            <br/>
+                            <canvas id="waveform" width="400" height="50"></canvas>
+                            <br/>
+                            <input class="predict" type="submit" value="Predict"/>
+                        </form>
+                        <br/> 
+                        <form action="/detect_emotion" method="post" >
+                          <button type="submit"><i class="fa-solid fa-microphone"></i></button>
+                      </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--Integrating javascript file -->
+        <script src="./main.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    </body>
+
+</html>
