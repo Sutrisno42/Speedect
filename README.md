@@ -1,5 +1,5 @@
 <div align="center">
-  <h1 style="text-align: center;">Spedect🎙</h1>
+  <h1 style="text-align: center;">Spedect 🎙</h1>
 
 ![Tomatoes Pictures](https://raw.githubusercontent.com/Sutrisno42/Speedect/main/assets/logoasli.png)
 </br>
